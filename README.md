@@ -14,7 +14,7 @@ In Page Edit, click "Rename/Replace" for a file...
 
 #### Rename
 
-Use the text input to edit or replace the existing name (excluding file extension).
+Use the text input to edit the existing name (excluding file extension).
 
 #### Replace
 
