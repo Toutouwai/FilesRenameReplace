@@ -24,7 +24,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		return array(
 			'title' => "Files Rename Replace",
 			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
-			'version' => '0.1.0',
+			'version' => '0.1.1',
 			'author' => 'Robin Sallis',
 			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
 			'icon' => 'refresh',
@@ -135,7 +135,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		$f->name = $f_name;
 		$f->label = $this->_('Roles that may rename/replace files');
 		$f->description = $this->_('Leave this empty to enable module for all roles.');
-		$roles = $this->roles->find("name!=guest|superuser");
+		$roles = $this->roles->find("name!=guest");
 		foreach($roles as $select_option) {
 			$f->addOption($select_option->name);
 		}
