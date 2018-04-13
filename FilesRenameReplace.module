@@ -1,0 +1,146 @@
+<?php namespace ProcessWire;
+
+/**
+ *
+ * Files Rename Replace
+ *
+ * @author Robin Sallis
+ *
+ * ProcessWire 3.x
+ * Copyright (C) 2011 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FilesRenameReplace extends WireData implements Module, ConfigurableModule {
+
+	/**
+	 * Module information
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => "Files Rename Replace",
+			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
+			'version' => '0.1.0',
+			'author' => 'Robin Sallis',
+			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
+			'icon' => 'refresh',
+			'autoload' => "template=admin",
+		);
+	}
+
+	/**
+	 * Ready
+	 */
+	public function ready() {
+		$enable = false;
+		if(!$this->allowed_roles || $this->user->isSuperuser()) {
+			// All roles are allowed or user is superuser
+			$enable = true;
+		} else {
+			foreach($this->allowed_roles as $allowed_role) {
+				if($this->user->hasRole($allowed_role)) {
+					$enable = true;
+					break;
+				}
+			}
+		}
+		if($enable) {
+			$this->addHookAfter('InputfieldFile::renderReadyHook', $this, 'afterRenderReady');
+			$this->addHookAfter('InputfieldFile::renderItem', $this, 'afterRenderItem');
+			$this->addHookBefore('InputfieldFile::processInputFile', $this, 'beforeProcessInputFile');
+		}
+	}
+
+	/**
+	 * Add JS and CSS dependencies
+	 *
+	 * @param HookEvent $event
+	 */
+	protected function afterRenderReady(HookEvent $event) {
+		$inputfield = $event->object;
+		if($inputfield->className !== 'InputfieldFile') return;
+
+		$config = $this->config;
+		$info = $this->getModuleInfo();
+		$version = (int) $info['version'];
+		$config->scripts->add($config->urls->{$this} . "{$this}.js?v={$version}");
+		$config->styles->add($config->urls->{$this} . "{$this}.css?v={$version}");
+	}
+
+	/**
+	 * Add extra inputs to file items
+	 *
+	 * @param HookEvent $event
+	 */
+	protected function afterRenderItem(HookEvent $event) {
+		/* @var InputfieldFile $inputfield */
+		$inputfield = $event->object;
+		if($inputfield->className !== 'InputfieldFile') return;
+
+		$field = $inputfield->hasField;
+		if(!$field) return;
+		$pagefile = $event->arguments(0);
+		$id = $event->arguments(1);
+		$event->return .= $this->files->render($this->config->paths->$this . 'extra_inputs', array(
+			'id' => $id,
+			'inputfield' => $inputfield,
+			'pagefile' => $pagefile,
+		));
+	}
+
+	/**
+	 * Copy metadata if replacing file
+	 *
+	 * @param HookEvent $event
+	 */
+	protected function beforeProcessInputFile(HookEvent $event) {
+		/* @var InputfieldFile $inputfield */
+		$inputfield = $event->object;
+		if($inputfield->className !== 'InputfieldFile') return;
+
+		$input = $event->arguments(0);
+		$pagefile = $event->arguments(1);
+
+		$id = $inputfield->name . '_' . $pagefile->hash;
+		$key = "replace_$id";
+		$replace = $input->$key;
+		if($replace) {
+			$replace_file = $inputfield->value->getFile($replace);
+			if($replace_file && $replace_file instanceof Pagefile) {
+				$metadata = $inputfield->extractMetadata($replace_file);
+				foreach($metadata as $key => $val) {
+					if($val) {
+						$new_key = "{$key}_{$id}";
+						$input->$new_key = $val;
+					}
+				}
+			}
+		}
+		$event->arguments(0, $input);
+	}
+
+	/**
+	 * Config inputfields
+	 *
+	 * @param InputfieldWrapper $inputfields
+	 */
+	public function getModuleConfigInputfields($inputfields) {
+		/* @var InputfieldAsmSelect $f */
+		$f = $this->modules->InputfieldAsmSelect;
+		$f_name = 'allowed_roles';
+		$f->name = $f_name;
+		$f->label = $this->_('Roles that may rename/replace files');
+		$f->description = $this->_('Leave this empty to enable module for all roles.');
+		$roles = $this->roles->find("name!=guest|superuser");
+		foreach($roles as $select_option) {
+			$f->addOption($select_option->name);
+		}
+		$f->value = $this->$f_name;
+		$inputfields->add($f);
+	}
+
+}

@@ -1,0 +1,23 @@
+/* Default */
+.rr-wrap { padding-left:15px; padding-right:15px; }
+.InputfieldItemListCollapse .rr-wrap { padding-top:15px; }
+.InputfieldFileData[style*="display: none"] + .rr-wrap, .InputfieldFileData[style*="display:none"] + .rr-wrap { display:none; } /* file is marked for deletion */
+.rr-show { cursor:pointer; font-size:12px; line-height:14px; text-transform:uppercase; color:#999999; margin-top:-2px; padding-bottom:12px; }
+.InputfieldFileHasTags .rr-show { margin-top:-9px; }
+.rr-container { display:none; padding-bottom:15px; }
+.rr-inputs { margin:-8px -13px; }
+.rr-input { display:inline-block; vertical-align:top; margin-top:-6px; padding:8px 13px; }
+.rr-input label { font-size:0.85em; display:block; }
+.rr-input input[type="text"] { width:300px !important; }
+.rr-input input[type="text"], .rr-input select { height:28px !important; line-height:28px !important; }
+
+/* Reno */
+.AdminThemeReno .rr-show { margin-top:-18px; }
+.AdminThemeReno .InputfieldFileHasTags .rr-show { margin-top:-9px; }
+
+/* Uikit */
+.AdminThemeUikit .rr-wrap { background:#fff; border:1px solid #d9e1ea; border-top:none; padding-left:16px; padding-right:16px; }
+.AdminThemeUikit .rr-show { padding-bottom:13px; margin-top:-5px; }
+.AdminThemeUikit .InputfieldItemListCollapse .rr-show { margin-top:-3px; }
+.AdminThemeUikit .InputfieldFileHasTags .rr-show { margin-top:-11px; }
+.AdminThemeUikit .rr-input label { padding-bottom:4px; }
