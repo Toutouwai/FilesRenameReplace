@@ -2,7 +2,7 @@
 
 A module for ProcessWire CMS/CMF. Allows files to be renamed or replaced in Page Edit.
 
-![rename-replace](https://user-images.githubusercontent.com/1538852/38719676-3f79791c-3f47-11e8-8550-6092b4af349a.gif)
+![rename-replace](https://user-images.githubusercontent.com/1538852/38732240-9b85be62-3f71-11e8-811f-4dd58ee9b5a3.gif)
 
 ## Usage
 
@@ -18,4 +18,6 @@ Use the text input to edit the existing name (excluding file extension).
 
 #### Replace
 
-Use the select to choose another file from the same field. On page save that file will be replaced with the file you are editing. Metadata (description, tags) will be copied from the replaced file, and if the file extensions are the same the name of the replaced file will be retained.
+Use the "Replace with" select to choose a replacement file from the same field. On page save the file will be replaced with the file you selected. Metadata (description, tags) will be retained, and the filename also if the file extensions are the same.
+
+Tip: newly uploaded files will appear in the "Replace with" select after the page has been saved.

@@ -24,7 +24,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		return array(
 			'title' => "Files Rename Replace",
 			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
-			'version' => '0.1.2',
+			'version' => '0.1.3',
 			'author' => 'Robin Sallis',
 			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
 			'icon' => 'refresh',
@@ -51,7 +51,8 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		if($enable) {
 			$this->addHookAfter('InputfieldFile::renderReadyHook', $this, 'afterRenderReady');
 			$this->addHookAfter('InputfieldFile::renderItem', $this, 'afterRenderItem');
-			$this->addHookBefore('InputfieldFile::processInputFile', $this, 'beforeProcessInputFile');
+			$this->addHookBefore('InputfieldFile::processInput', $this, 'beforeProcessInput');
+			$this->addHookAfter('InputfieldFile::processInputFile', $this, 'afterProcessInputFile');
 		}
 	}
 
@@ -93,37 +94,63 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 	}
 
 	/**
-	 * Copy metadata if replacing file
+	 * Replace: copy metadata and sort to replacement files
 	 *
 	 * @param HookEvent $event
 	 */
-	protected function beforeProcessInputFile(HookEvent $event) {
+	protected function beforeProcessInput(HookEvent $event) {
 		/* @var InputfieldFile $inputfield */
 		$inputfield = $event->object;
 		if($inputfield->className !== 'InputfieldFile') return;
 
 		$input = $event->arguments(0);
-		$pagefile = $event->arguments(1);
-
-		$id = $inputfield->name . '_' . $pagefile->hash;
-		$key = "replace_$id";
-		$replace = $input->$key;
-		if($replace) {
+		foreach($inputfield->value as $pagefile) {
+			$id = "{$inputfield->name}_{$pagefile->hash}";
+			$key = "replacewith_$id";
+			$replace = $input->$key;
+			if(!$replace) continue;
 			$replace_file = $inputfield->value->getFile($replace);
 			if($replace_file && $replace_file instanceof Pagefile) {
-				$replace_sort_key = 'sort_' . $inputfield->name . '_' . $replace_file->hash;
+				$replace_id = "{$inputfield->name}_{$replace_file->hash}";
+				$replace_sort_key = "sort_{$replace_id}";
 				$sort_key = "sort_{$id}";
-				$input->$sort_key = $input->$replace_sort_key;
-				$metadata = $inputfield->extractMetadata($replace_file);
+				$input->$replace_sort_key = $input->$sort_key;
+				$metadata = $inputfield->extractMetadata($pagefile);
 				foreach($metadata as $key => $val) {
 					if($val) {
-						$new_key = "{$key}_{$id}";
+						$new_key = "{$key}_{$replace_id}";
 						$input->$new_key = $val;
 					}
 				}
 			}
 		}
 		$event->arguments(0, $input);
+	}
+
+	/**
+	 * Replace: delete old file and rename replacement file
+	 *
+	 * @param HookEvent $event
+	 */
+	protected function afterProcessInputFile(HookEvent $event) {
+		/* @var InputfieldFile $inputfield */
+		$inputfield = $event->object;
+		if($inputfield->className !== 'InputfieldFile') return;
+
+		$input = $event->arguments(0);
+		$pagefile = $event->arguments(1);
+		$id = "{$inputfield->name}_{$pagefile->hash}";
+		$key = "replacewith_$id";
+		$replace = $input->$key;
+		if(!$replace) return;
+		$replace_file = $inputfield->value->getFile($replace);
+		if($replace_file && $replace_file instanceof Pagefile) {
+			$inputfield->processInputDeleteFile($pagefile);
+			if(strtolower($replace_file->ext()) == strtolower($pagefile->ext())) {
+				$inputfield->value->rename($replace_file, $pagefile->name);
+			}
+			$event->return = true; // track change
+		}
 	}
 
 	/**
