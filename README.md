@@ -2,7 +2,7 @@
 
 A module for ProcessWire CMS/CMF. Allows files to be renamed or replaced in Page Edit.
 
-![rename-replace](https://user-images.githubusercontent.com/1538852/38715692-c5a6dd0c-3f30-11e8-842a-8097b27263ef.gif)
+![rename-replace](https://user-images.githubusercontent.com/1538852/38717173-3d820fec-3f39-11e8-938f-f94a281f912a.gif)
 
 ## Usage
 
