@@ -1,23 +1,19 @@
-/* Default */
-.rr-wrap { padding-left:15px; padding-right:15px; }
+/* Default & Reno */
+.rr-wrap { padding-left:15px; padding-right:15px; padding-bottom:6px; margin-top:-2px; }
+.InputfieldFileHasTags .rr-wrap { margin-top:-9px; }
 .InputfieldItemListCollapse .rr-wrap { padding-top:15px; }
 .InputfieldFileData[style*="display: none"] + .rr-wrap, .InputfieldFileData[style*="display:none"] + .rr-wrap { display:none; } /* file is marked for deletion */
-.rr-show { cursor:pointer; font-size:12px; line-height:14px; text-transform:uppercase; color:#999999; margin-top:-2px; padding-bottom:12px; }
-.InputfieldFileHasTags .rr-show { margin-top:-9px; }
-.rr-container { display:none; padding-bottom:15px; }
+.rr-show { cursor:pointer; font-size:12px; line-height:14px; text-transform:uppercase; color:#999999; padding-bottom:6px; }
+.rr-container { display:none; padding-bottom:9px; }
 .rr-inputs { margin:-8px -13px; }
-.rr-input { display:inline-block; vertical-align:top; margin-top:-6px; padding:8px 13px; }
+.rr-input { display:inline-block; vertical-align:top; padding:8px 13px; }
 .rr-input label { font-size:0.85em; display:block; }
 .rr-input input[type="text"] { width:300px !important; }
-.rr-input input[type="text"], .rr-input select { height:28px !important; line-height:28px !important; }
-
-/* Reno */
-.AdminThemeReno .rr-show { margin-top:-18px; }
-.AdminThemeReno .InputfieldFileHasTags .rr-show { margin-top:-9px; }
+.rr-input input[type="text"], .rr-input select { height:28px !important; line-height:28px !important; border-radius:0; }
 
 /* Uikit */
-.AdminThemeUikit .rr-wrap { background:#fff; border:1px solid #d9e1ea; border-top:none; padding-left:16px; padding-right:16px; }
-.AdminThemeUikit .rr-show { padding-bottom:13px; margin-top:-5px; }
-.AdminThemeUikit .InputfieldItemListCollapse .rr-show { margin-top:-3px; }
-.AdminThemeUikit .InputfieldFileHasTags .rr-show { margin-top:-11px; }
+.AdminThemeUikit .rr-wrap { background:#fff; border:1px solid #d9e1ea; border-top:none; padding-left:16px; padding-right:16px; margin-top:-5px; }
+.AdminThemeUikit .InputfieldFileHasTags .rr-wrap { margin-top:-11px; }
+.AdminThemeUikit .InputfieldItemListCollapse .rr-wrap { padding-top:12px; }
+.AdminThemeUikit .rr-show { padding-bottom:7px; }
 .AdminThemeUikit .rr-input label { padding-bottom:4px; }
