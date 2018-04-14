@@ -14,6 +14,6 @@
 /* Uikit */
 .AdminThemeUikit .rr-wrap { background:#fff; border:1px solid #d9e1ea; border-top:none; padding-left:16px; padding-right:16px; margin-top:-5px; }
 .AdminThemeUikit .InputfieldFileHasTags .rr-wrap { margin-top:-11px; }
-.AdminThemeUikit .InputfieldItemListCollapse .rr-wrap { padding-top:12px; }
+.AdminThemeUikit .InputfieldItemListCollapse .rr-wrap { margin-top:0; padding-top:12px; }
 .AdminThemeUikit .rr-show { padding-bottom:7px; }
 .AdminThemeUikit .rr-input label { padding-bottom:4px; }
