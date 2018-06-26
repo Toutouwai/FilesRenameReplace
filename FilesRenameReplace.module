@@ -22,13 +22,13 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => "Files Rename Replace",
+			'title' => 'Files Rename Replace',
 			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
-			'version' => '0.1.5',
+			'version' => '0.1.6',
 			'author' => 'Robin Sallis',
 			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
 			'icon' => 'refresh',
-			'autoload' => "template=admin",
+			'autoload' => 'template=admin',
 		);
 	}
 
@@ -67,7 +67,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 
 		$config = $this->config;
 		$info = $this->getModuleInfo();
-		$version = (int) $info['version'];
+		$version = $info['version'];
 		$config->scripts->add($config->urls->{$this} . "{$this}.js?v={$version}");
 		$config->styles->add($config->urls->{$this} . "{$this}.css?v={$version}");
 	}
@@ -104,6 +104,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		if($inputfield->className !== 'InputfieldFile') return;
 
 		$input = $event->arguments(0);
+		if(!$inputfield->value) return;
 		foreach($inputfield->value as $pagefile) {
 			$id = "{$inputfield->name}_{$pagefile->hash}";
 			$key = "replacewith_$id";
@@ -136,6 +137,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		/* @var InputfieldFile $inputfield */
 		$inputfield = $event->object;
 		if($inputfield->className !== 'InputfieldFile') return;
+		if(!$inputfield->value) return;
 
 		$input = $event->arguments(0);
 		$pagefile = $event->arguments(1);
