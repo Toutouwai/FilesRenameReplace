@@ -18,6 +18,6 @@ Use the text input to edit the existing name (excluding file extension).
 
 #### Replace
 
-Use the "Replace with" select to choose a replacement file from the same field. On page save the file will be replaced with the file you selected. Metadata (description, tags) will be retained, and the filename also if the file extensions are the same.
+Use the "Replace with" select to choose a replacement file from the same field. On page save the file will be replaced with the file you selected. Metadata (description, tags, custom fields, upload name) will be retained, and the filename also if the file extensions are the same.
 
 Tip: newly uploaded files will appear in the "Replace with" select after the page has been saved.

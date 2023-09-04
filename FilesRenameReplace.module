@@ -1,19 +1,6 @@
 <?php namespace ProcessWire;
 
-/**
- *
- * Files Rename Replace
- *
- * @author Robin Sallis
- *
- * ProcessWire 3.x
- * Copyright (C) 2011 by Ryan Cramer
- * Licensed under GNU/GPL v2, see LICENSE.TXT
- *
- * http://www.processwire.com
- * http://www.ryancramer.com
- *
- */
+// Note: the renaming feature is actually handled by the core InputfieldFile::processInputFile()
 
 class FilesRenameReplace extends WireData implements Module, ConfigurableModule {
 
@@ -24,11 +11,12 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		return array(
 			'title' => 'Files Rename Replace',
 			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
-			'version' => '0.1.6',
+			'version' => '0.2.0',
 			'author' => 'Robin Sallis',
 			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
 			'icon' => 'refresh',
 			'autoload' => 'template=admin',
+			'requires' => 'ProcessWire>=3.0.0, PHP>=5.4.0',
 		);
 	}
 
@@ -65,7 +53,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		$inputfield = $event->object;
 		if($inputfield->className !== 'InputfieldFile') return;
 
-		$config = $this->config;
+		$config = $this->wire()->config;
 		$info = $this->getModuleInfo();
 		$version = $info['version'];
 		$config->scripts->add($config->urls->{$this} . "{$this}.js?v={$version}");
@@ -112,16 +100,17 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 			if(!$replace) continue;
 			$replace_file = $inputfield->value->getFile($replace);
 			if($replace_file && $replace_file instanceof Pagefile) {
+				// Copy input for original file to replacement file
 				$replace_id = "{$inputfield->name}_{$replace_file->hash}";
-				$replace_sort_key = "sort_{$replace_id}";
-				$sort_key = "sort_{$id}";
-				$input->$replace_sort_key = $input->$sort_key;
-				$metadata = $inputfield->extractMetadata($pagefile);
-				foreach($metadata as $key => $val) {
-					if($val) {
-						$new_key = "{$key}_{$replace_id}";
-						$input->$new_key = $val;
-					}
+				foreach($input as $key => $value) {
+					// Skip input not related to this pagefile
+					if(strpos($key, $id) === false) continue;
+					// Skip inputfields added by this module
+					if(strpos($key, 'rename_') === 0) continue;
+					if(strpos($key, 'replacewith_') === 0) continue;
+					// Set input
+					$new_key = str_replace($id, $replace_id, $key);
+					$input->$new_key = $value;
 				}
 			}
 		}
@@ -136,17 +125,21 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 	protected function afterProcessInputFile(HookEvent $event) {
 		/* @var InputfieldFile $inputfield */
 		$inputfield = $event->object;
+		/** @var WireInputData $input */
+		$input = $event->arguments(0);
+		/** @var Pagefile $pagefile */
+		$pagefile = $event->arguments(1);
 		if($inputfield->className !== 'InputfieldFile') return;
 		if(!$inputfield->value) return;
 
-		$input = $event->arguments(0);
-		$pagefile = $event->arguments(1);
 		$id = "{$inputfield->name}_{$pagefile->hash}";
 		$key = "replacewith_$id";
 		$replace = $input->$key;
 		if(!$replace) return;
 		$replace_file = $inputfield->value->getFile($replace);
 		if($replace_file && $replace_file instanceof Pagefile) {
+			$upload_name = $pagefile->filedata('uploadName');
+			if($upload_name) $replace_file->filedata('uploadName', $upload_name);
 			$inputfield->processInputDeleteFile($pagefile);
 			if(strtolower($replace_file->ext()) == strtolower($pagefile->ext())) {
 				$inputfield->value->rename($replace_file, $pagefile->name);
