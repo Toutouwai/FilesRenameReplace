@@ -1,0 +1,15 @@
+.InputfieldFile {
+	.rr-wrap { background:#fff; border:1px solid #d9e1ea; border-top:none; padding:9px 16px; }
+	.rr-show { cursor:pointer; font-size:12px; line-height:15px; text-transform:uppercase; color:#999999; }
+	.rr-container { display:none; }
+	.rr-input { display:inline-block; vertical-align:top; padding-bottom:9px;
+		label { padding-bottom:4px; font-size:0.85em; display:block; }
+		input[type='text'], select { height:28px !important; line-height:28px !important; border-radius:0; }
+		input[type='text'] { width:300px !important; }
+		&.rr-rename { padding-right:20px; }
+	}
+	// File is marked for deletion
+	.InputfieldFileData[style*="display: none"], .InputfieldFileData[style*="display:none"] {
+		+ .rr-wrap { display:none; }
+	}
+}
