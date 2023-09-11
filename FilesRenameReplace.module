@@ -11,7 +11,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		return array(
 			'title' => 'Files Rename Replace',
 			'summary' => 'Allows files to be renamed or replaced in Page Edit.',
-			'version' => '0.2.2',
+			'version' => '0.2.3',
 			'author' => 'Robin Sallis',
 			'href' => 'https://github.com/Toutouwai/FilesRenameReplace',
 			'icon' => 'refresh',
@@ -100,6 +100,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 			if(!$replace) continue;
 			$replace_file = $inputfield->value->getFile($replace);
 			if($replace_file && $replace_file instanceof Pagefile) {
+				$this->replaceReady($pagefile, $replace_file);
 				// Copy input for original file to replacement file
 				$replace_id = "{$inputfield->name}_{$replace_file->hash}";
 				foreach($input as $key => $value) {
@@ -118,6 +119,14 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 		}
 		$event->arguments(0, $input);
 	}
+
+	/**
+	 * Hookable method called when a file is about to be replaced
+	 *
+	 * @param Pagefile $pagefile
+	 * @param Pagefile $replacement
+	 */
+	public function ___replaceReady($pagefile, $replacement) { }
 
 	/**
 	 * Replace: delete old file and rename replacement file
