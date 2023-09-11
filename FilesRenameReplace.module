@@ -100,7 +100,7 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 			if(!$replace) continue;
 			$replace_file = $inputfield->value->getFile($replace);
 			if($replace_file && $replace_file instanceof Pagefile) {
-				$this->replaceReady($pagefile, $replace_file);
+				$this->replaceReady($inputfield, $pagefile, $replace_file);
 				// Copy input for original file to replacement file
 				$replace_id = "{$inputfield->name}_{$replace_file->hash}";
 				foreach($input as $key => $value) {
@@ -123,10 +123,11 @@ class FilesRenameReplace extends WireData implements Module, ConfigurableModule 
 	/**
 	 * Hookable method called when a file is about to be replaced
 	 *
+	 * @param InputfieldFile $inputfield
 	 * @param Pagefile $pagefile
 	 * @param Pagefile $replacement
 	 */
-	public function ___replaceReady($pagefile, $replacement) { }
+	public function ___replaceReady($inputfield, $pagefile, $replacement) { }
 
 	/**
 	 * Replace: delete old file and rename replacement file
